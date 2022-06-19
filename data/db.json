@@ -1,0 +1,22 @@
+{
+  "todo": [
+    {
+      "title": "Title One",
+      "detail": "World",
+      "complete": false,
+      "id": 1
+    },
+    {
+      "title": "Title Two",
+      "detail": "World",
+      "complete": false,
+      "id": 2
+    },
+    {
+      "title": "Title Three",
+      "detail": "World",
+      "complete": false,
+      "id": 3
+    }
+  ]
+}

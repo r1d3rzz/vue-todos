@@ -1,18 +1,24 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div v-for="todo in todos" :key="todo.id">
+      <SingleTodo :todo="todo" />
+    </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import getTodos from "@/composables/getTodos";
+import SingleTodo from "@/views/SingleTodo.vue";
 
 export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
-}
+  name: "HomeView",
+  components: { SingleTodo },
+  setup() {
+    let { load, todos, errors } = getTodos();
+
+    load();
+
+    return { errors, todos };
+  },
+};
 </script>
