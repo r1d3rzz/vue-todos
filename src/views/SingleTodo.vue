@@ -10,9 +10,11 @@
         </h2>
       </div>
       <div class="btnGp">
-        <span>edit</span>
-        <span @click="deleteTodo(todo)">delete</span>
-        <span :class="[todo.complete ? 'done' : null]" @click="doneBtn(todo)"
+        <span class="editBtn">edit</span>
+        <span @click="deleteTodo(todo)" class="deleteBtn">delete</span>
+        <span
+          :class="[todo.complete ? 'done' : null, 'doneBtn']"
+          @click="doneBtn(todo)"
           >done</span
         >
       </div>
@@ -84,6 +86,21 @@ export default {
   border: 1px solid blueviolet;
   font-size: 15px;
   transition: 0.2s ease;
+}
+
+.editBtn:hover {
+  background-color: green;
+  color: white;
+}
+
+.deleteBtn:hover {
+  background-color: red;
+  color: white;
+}
+
+.doneBtn:hover {
+  background-color: blue;
+  color: white;
 }
 
 .complete {

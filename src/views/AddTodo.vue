@@ -2,22 +2,48 @@
   <div class="addTodo">
     <div class="inputBox">
       <label for="title">TItle</label>
-      <input type="text" id="title" />
+      <input type="text" id="title" v-model="title" />
     </div>
 
     <div class="inputBox">
       <label for="Detail">Detail</label>
-      <input type="text" id="Detail" />
+      <input type="text" id="Detail" v-model="detail" />
     </div>
 
     <div class="buttonBox">
-      <span>Create</span>
+      <span @click="createTodo">Create</span>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
+export default {
+  setup() {
+    let title = ref("");
+    let detail = ref("");
+
+    let router = useRouter();
+
+    let createTodo = () => {
+      if (title.value == "" && detail.value == "")
+        return alert("Please fill Input Fields");
+
+      fetch("http://localhost:3000/todo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.value,
+          detail: detail.value,
+          complete: false,
+        }),
+      }).then((_) => router.push({ name: "home" }));
+    };
+
+    return { title, detail, createTodo };
+  },
+};
 </script>
 
 <style>
