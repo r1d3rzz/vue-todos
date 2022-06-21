@@ -11,7 +11,7 @@
       </div>
       <div class="btnGp">
         <span>edit</span>
-        <span>delete</span>
+        <span @click="deleteTodo(todo)">delete</span>
         <span :class="[todo.complete ? 'done' : null]" @click="doneBtn(todo)"
           >done</span
         >
@@ -25,7 +25,8 @@
 import { ref } from "@vue/reactivity";
 export default {
   props: ["todo"],
-  setup() {
+  emits: ["deleteTodoItem"],
+  setup(_, context) {
     let showDetail = ref(false);
     let doneBtn = async (todo) => {
       await fetch("http://localhost:3000/todo/" + todo.id, {
@@ -36,7 +37,19 @@ export default {
         }),
       });
     };
-    return { showDetail, doneBtn };
+
+    let deleteTodo = (todo) => {
+      let isSure = confirm("are u sure to delete this ?");
+
+      if (!isSure) return;
+
+      fetch("http://localhost:3000/todo/" + todo.id, { method: "DELETE" }).then(
+        () => {
+          context.emit("deleteTodoItem", todo.id);
+        }
+      );
+    };
+    return { showDetail, doneBtn, deleteTodo };
   },
 };
 </script>
