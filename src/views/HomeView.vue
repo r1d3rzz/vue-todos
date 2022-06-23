@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <div v-for="todo in todos" :key="todo.id">
+    <navbar-view @dataFetch="dataFetch" :current="current" />
+    <div v-for="todo in todosFilter" :key="todo.id">
       <SingleTodo :todo="todo" @deleteTodoItem="deleteTodoItem" />
     </div>
   </div>
@@ -9,11 +10,16 @@
 <script>
 import getTodos from "@/composables/getTodos";
 import SingleTodo from "@/views/SingleTodo.vue";
+import NavbarView from "@/components/NavbarView.vue";
+import { ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
 
 export default {
   name: "HomeView",
-  components: { SingleTodo },
+  components: { SingleTodo, NavbarView },
   setup() {
+    let current = ref("all");
+
     let { load, todos, errors } = getTodos();
 
     let deleteTodoItem = (id) => {
@@ -22,9 +28,29 @@ export default {
       });
     };
 
+    let dataFetch = (data) => {
+      current.value = data;
+    };
+
+    let todosFilter = computed(() => {
+      if (current.value === "complete") {
+        return todos.value.filter((todo) => {
+          return todo.complete;
+        });
+      }
+
+      if (current.value === "ongoing") {
+        return todos.value.filter((todo) => {
+          return !todo.complete;
+        });
+      }
+
+      return todos.value;
+    });
+
     load();
 
-    return { errors, todos, deleteTodoItem };
+    return { errors, todos, deleteTodoItem, dataFetch, current, todosFilter };
   },
 };
 </script>
