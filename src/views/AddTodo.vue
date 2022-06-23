@@ -19,6 +19,8 @@
 <script>
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
 export default {
   setup() {
     let title = ref("");
@@ -38,7 +40,16 @@ export default {
           detail: detail.value,
           complete: false,
         }),
-      }).then((_) => router.push({ name: "home" }));
+      }).then((_) => {
+        router.push({ name: "home" });
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your work has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      });
     };
 
     return { title, detail, createTodo };
