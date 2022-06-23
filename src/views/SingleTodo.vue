@@ -10,7 +10,11 @@
         </h2>
       </div>
       <div class="btnGp">
-        <span class="editBtn">edit</span>
+        <span class="editBtn">
+          <router-link :to="{ name: 'editTodo', params: { id: todo.id } }">
+            edit
+          </router-link>
+        </span>
         <span @click="deleteTodo(todo)" class="deleteBtn">delete</span>
         <span
           :class="[todo.complete ? 'done' : null, 'doneBtn']"
@@ -51,6 +55,7 @@ export default {
         }
       );
     };
+
     return { showDetail, doneBtn, deleteTodo };
   },
 };
@@ -91,6 +96,11 @@ export default {
 .editBtn:hover {
   background-color: green;
   color: white;
+}
+
+.editBtn > a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .deleteBtn:hover {
