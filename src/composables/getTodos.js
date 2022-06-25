@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { db } from "@/firebase/config";
 
 let getTodos = () => {
   let todos = ref([]);
@@ -6,12 +7,13 @@ let getTodos = () => {
 
   let load = async () => {
     try {
-      let res = await fetch("http://localhost:3000/todo");
-      if (res.status === 404) {
-        throw new Error("url not found");
-      }
-      let data = await res.json();
-      todos.value = data;
+      let res = await db
+        .collection("todos")
+        .orderBy("created_at", "desc")
+        .get();
+      todos.value = res.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
     } catch (err) {
       errors.value = err.message;
     }

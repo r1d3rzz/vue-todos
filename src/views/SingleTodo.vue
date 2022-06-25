@@ -30,7 +30,7 @@
 <script>
 import { ref } from "@vue/reactivity";
 import Swal from "sweetalert2";
-import { onMounted } from "@vue/runtime-core";
+import { db } from "@/firebase/config";
 
 export default {
   props: ["todo"],
@@ -38,13 +38,12 @@ export default {
   setup(_, context) {
     let showDetail = ref(false);
     let doneBtn = async (todo) => {
-      await fetch("http://localhost:3000/todo/" + todo.id, {
-        method: "PATCH",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
+      await db
+        .collection("todos")
+        .doc(todo.id)
+        .update({
           complete: (todo.complete = !todo.complete),
-        }),
-      });
+        });
     };
 
     let deleteTodo = (todo) => {
@@ -58,11 +57,12 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch("http://localhost:3000/todo/" + todo.id, {
-            method: "DELETE",
-          }).then(() => {
-            context.emit("deleteTodoItem", todo.id);
-          });
+          db.collection("todos")
+            .doc(todo.id)
+            .delete()
+            .then(() => {
+              context.emit("deleteTodoItem", todo.id);
+            });
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
         }
       });

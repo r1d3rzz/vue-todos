@@ -21,6 +21,7 @@ import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { onMounted } from "@vue/runtime-core";
 import Swal from "sweetalert2";
+import { db, timestamp } from "@/firebase/config";
 
 export default {
   props: ["id"],
@@ -32,39 +33,39 @@ export default {
     let detail = ref("");
 
     let load = async () => {
-      let res = await fetch("http://localhost:3000/todo/" + props.id);
+      let res = await db.collection("todos").doc(props.id).get();
       if (res.status === 404) {
         throw new Error("url not found");
       }
-      let data = await res.json();
-      title.value = data.title;
-      detail.value = data.detail;
+      title.value = res.data().title;
+      detail.value = res.data().detail;
     };
 
     onMounted(() => load());
 
-    let editTodo = () => {
-      if (title.value == "" && detail.value == "")
+    let editTodo = async () => {
+      if (title.value == "" || detail.value == "")
         return alert("Please fill Input Fields");
 
-      fetch("http://localhost:3000/todo/" + props.id, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await db
+        .collection("todos")
+        .doc(props.id)
+        .update({
           title: title.value,
           detail: detail.value,
           complete: false,
-        }),
-      }).then((_) => {
-        router.push({ name: "home" });
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Your work has been edited",
-          showConfirmButton: false,
-          timer: 1500,
+          created_at: timestamp(),
+        })
+        .then((_) => {
+          router.push({ name: "home" });
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your work has been edited",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         });
-      });
     };
 
     return { title, detail, editTodo };

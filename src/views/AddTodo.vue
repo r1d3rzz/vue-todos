@@ -20,6 +20,7 @@
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import { db, timestamp } from "@/firebase/config";
 
 export default {
   setup() {
@@ -28,28 +29,28 @@ export default {
 
     let router = useRouter();
 
-    let createTodo = () => {
-      if (title.value == "" && detail.value == "")
+    let createTodo = async () => {
+      if (title.value == "" || detail.value == "")
         return alert("Please fill Input Fields");
 
-      fetch("http://localhost:3000/todo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      await db
+        .collection("todos")
+        .add({
           title: title.value,
           detail: detail.value,
           complete: false,
-        }),
-      }).then((_) => {
-        router.push({ name: "home" });
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Your work has been saved",
-          showConfirmButton: false,
-          timer: 1500,
+          created_at: timestamp(),
+        })
+        .then((_) => {
+          router.push({ name: "home" });
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your work has been saved",
+            showConfirmButton: false,
+            timer: 1500,
+          });
         });
-      });
     };
 
     return { title, detail, createTodo };
