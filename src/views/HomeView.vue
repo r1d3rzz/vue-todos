@@ -1,8 +1,15 @@
 <template>
   <div class="home">
     <navbar-view @dataFetch="dataFetch" :current="current" />
-    <div v-for="todo in todosFilter" :key="todo.id">
-      <SingleTodo :todo="todo" @deleteTodoItem="deleteTodoItem" />
+
+    <div v-if="todosFilter.length">
+      <div v-for="todo in todosFilter" :key="todo.id">
+        <SingleTodo :todo="todo" @deleteTodoItem="deleteTodoItem" />
+      </div>
+    </div>
+
+    <div v-else class="loadingBox">
+      <h1>loading...</h1>
     </div>
   </div>
 </template>
@@ -54,3 +61,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.loadingBox {
+  margin: 150px auto;
+}
+</style>
