@@ -66,4 +66,7 @@ export default {
 .loadingBox {
   margin: 150px auto;
 }
+.home {
+  margin: 0 auto;
+}
 </style>

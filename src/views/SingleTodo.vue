@@ -2,12 +2,12 @@
   <div :class="[todo.complete ? 'complete' : null, 'todo']">
     <div class="layout">
       <div>
-        <h2
+        <h3
           :class="[todo.complete ? 'headerComplete' : null, 'header']"
           @click="showDetail = !showDetail"
         >
           {{ todo.title }}
-        </h2>
+        </h3>
       </div>
       <div class="btnGp">
         <span class="editBtn">
@@ -75,8 +75,8 @@ export default {
 
 <style>
 .todo {
-  width: 400px;
-  padding: 10px;
+  width: 320px;
+  padding: 5px;
   margin: 10px auto;
   border-radius: 5px;
   border: 1px solid black;
@@ -101,7 +101,7 @@ export default {
   user-select: none;
   cursor: pointer;
   border: 1px solid blueviolet;
-  font-size: 15px;
+  font-size: 10px;
   transition: 0.2s ease;
 }
 
