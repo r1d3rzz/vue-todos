@@ -5,12 +5,16 @@ let getTodos = () => {
   let todos = ref([]);
   let errors = ref("");
 
-  let load = async () => {
+  let load = () => {
     try {
-      let res = await db
+      let res = db
         .collection("todos")
         .orderBy("created_at", "desc")
-        .get();
+        .onSnapshot((snap) => {
+          todos.value = snap.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() };
+          });
+        });
       todos.value = res.docs.map((doc) => {
         return { id: doc.id, ...doc.data() };
       });
